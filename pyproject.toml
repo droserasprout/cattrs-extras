@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "cattrs_extras"
+name = "cattrs-extras"
 version = "0.0.0"
 description = "Advanced converters for cattrs"
-authors = ["Lev Gorodstskiy <github@droserasprout.space>"]
-homepage = "https://github.com/droserasprout/cattrs_extras"
-repository = "git@github.com:droserasprout/cattrs_extras.git"
+authors = ["Lev Gorodetskiy <github@droserasprout.space>"]
+homepage = "https://github.com/droserasprout/cattrs-extras"
+repository = "git@github.com:droserasprout/cattrs-extras.git"
 packages = [
     { include = "cattrs_extras", from = "src" },
 ]
