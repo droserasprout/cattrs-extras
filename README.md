@@ -47,7 +47,7 @@ assert raw_apple == {'weight': '200.5', 'color': 'RED', 'best_before': 158581800
 
 ## Tortoise ORM
 
-Important note: Tortoise ORM have chosen pydantic as a serialization library so better to stick with it. However pydantic support is still WIP, you can check current status here.
+Important note: Tortoise ORM have chosen [pydantic](https://github.com/samuelcolvin/pydantic) as a serialization library so better to stick with it. However pydantic support is still WIP, you can check current status [here](https://tortoise-orm.readthedocs.io/en/latest/contrib/pydantic.html).
 
 ```
 from cattrs_extras.tortoise.converter import TortoiseConverter
