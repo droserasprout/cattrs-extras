@@ -9,9 +9,16 @@ This package contains advanced converter classes for [cattrs](https://github.com
 * Human-readable exceptions on structuring failure
 * Support for Tortoise ORM models serialization (including relations)
 
+## Installation
+
+```shell-script
+PYTHON=python make install  # pyenv is used by default
+make build
+```
+
 ## Usage
 
-```
+```python
 from enum import Enum
 from decimal import Decimal
 from datetime import datetime
@@ -49,7 +56,7 @@ assert raw_apple == {'weight': '200.5', 'color': 'RED', 'best_before': 158581800
 
 Important note: Tortoise ORM have chosen [pydantic](https://github.com/samuelcolvin/pydantic) as a serialization library so better to stick with it. However pydantic support is still WIP, you can check current status [here](https://tortoise-orm.readthedocs.io/en/latest/contrib/pydantic.html).
 
-```
+```python
 from cattrs_extras.tortoise.converter import TortoiseConverter
 from cattrs_extras.tortoise.model import Model
 from tortoise import fields
@@ -61,6 +68,7 @@ class AppleModel(Model):
     best_before = fields.DateField()
     sweet = fields.BooleanField()
 
+# NOTE: Replace with module name of your models
 tortoise_converter = TortoiseConverter('cattrs_extras.tortoise.model')
 
 apple_model = tortoise_converter.structure(raw_apple, AppleModel)
