@@ -8,11 +8,12 @@ This package contains advanced converter classes for [cattrs](https://github.com
 * Alternative structuring algorithm capable of handling complex Unions without registering additional hooks 
 * Human-readable exceptions on structuring failure
 * Support for Tortoise ORM models serialization (including relations)
+* Additional class and Tortoise field for reversed enumerations (serialized to member name instead of value)
 
 ## Installation
 
 ```shell-script
-PYTHON=python make install  # pyenv is used by default
+DEV=0 PYTHON=python make install  # remove PYTHON to use pyenv
 make build
 ```
 
@@ -61,6 +62,7 @@ from cattrs_extras.tortoise.converter import TortoiseConverter
 from cattrs_extras.tortoise.model import Model
 from tortoise import fields
 
+# TODO: ReversedCharEnumField example
 class AppleModel(Model):
     id = fields.IntField(pk=True)
     weight = fields.DecimalField(20, 10)

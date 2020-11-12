@@ -7,13 +7,18 @@ from unittest import TestCase
 
 from tortoise import fields  # type: ignore
 
+from cattrs_extras.converter import ReversedEnum
 from cattrs_extras.tortoise.converter import TortoiseConverter
+from cattrs_extras.tortoise.fields import ReversedCharEnumField
 from cattrs_extras.tortoise.model import Model
 
 
 class TestEnum(Enum):
-    FOO = 'FOO'
-    BAR = 'BAR'
+    K1 = 'V1'
+
+
+class TestReversedEnum(ReversedEnum):
+    K2 = 'V2'
 
 
 class TestModel(Model):
@@ -21,6 +26,7 @@ class TestModel(Model):
     string = fields.CharField(255, null=True)
     decimal = fields.DecimalField(20, 10, null=True)
     enum = fields.CharEnumField(TestEnum, null=True)
+    reversed_enum = ReversedCharEnumField(TestReversedEnum, null=True)
     date = fields.DateField(null=True)
     datetime = fields.DatetimeField(null=True)
     timedelta = fields.TimeDeltaField(null=True)
@@ -42,7 +48,8 @@ class TortoiseConverterTest(TestCase):
             id=1,
             string='test',
             decimal=Decimal('1.23'),
-            enum=TestEnum.FOO,
+            enum=TestEnum.K1,
+            reversed_enum=TestReversedEnum.K2,
             date=date(2020, 1, 2),
             datetime=datetime(2020, 1, 2, 3, 4, 5),
             timedelta=timedelta(hours=1),
@@ -60,7 +67,8 @@ class TortoiseConverterTest(TestCase):
                 'datetime': 1577923445.0,
                 'timedelta': 3600.0,
                 'decimal': '1.23',
-                'enum': 'FOO',
+                'enum': 'V1',
+                'reversed_enum': 'K2',
                 'id': 1,
                 'relation': None,
                 'string': 'test'
@@ -74,6 +82,7 @@ class TortoiseConverterTest(TestCase):
             string=None,
             decimal=None,
             enum=None,
+            reversed_enum=None,
             date=None,
             datetime=None,
             timedelta=None,
@@ -92,6 +101,7 @@ class TortoiseConverterTest(TestCase):
                 'timedelta': None,
                 'decimal': None,
                 'enum': None,
+                'reversed_enum': None,
                 'id': None,
                 'relation': None,
                 'string': None
@@ -107,7 +117,8 @@ class TortoiseConverterTest(TestCase):
             'datetime': 1577923445.0,
             'timedelta': 3600.0,
             'decimal': '1.23',
-            'enum': 'FOO',
+            'enum': 'V1',
+            'reversed_enum': 'K2',
             'id': 1,
             'string': 'test'
         }
@@ -121,7 +132,8 @@ class TortoiseConverterTest(TestCase):
                 id=1,
                 string='test',
                 decimal=Decimal('1.23'),
-                enum=TestEnum.FOO,
+                enum=TestEnum.K1,
+                reversed_enum=TestReversedEnum.K2,
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),
@@ -138,9 +150,10 @@ class TortoiseConverterTest(TestCase):
             'datetime': '2020-01-01T00:00:00',
             'timedelta': '1h',
             'decimal': '1.23',
-            'enum': 'FOO',
+            'enum': 'V1',
+            'reversed_enum': 'K2',
             'id': 1,
-            'string': 'test'
+            'string': 'test',
         }
 
         # Act
@@ -152,7 +165,8 @@ class TortoiseConverterTest(TestCase):
                 id=1,
                 string='test',
                 decimal=Decimal('1.23'),
-                enum=TestEnum.FOO,
+                enum=TestEnum.K1,
+                reversed_enum=TestReversedEnum.K2,
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),
@@ -170,8 +184,9 @@ class TortoiseConverterTest(TestCase):
             'timedelta': None,
             'decimal': None,
             'enum': None,
+            'reversed_enum': None,
             'id': None,
-            'string': None
+            'string': None,
         }
 
         # Act
@@ -183,6 +198,7 @@ class TortoiseConverterTest(TestCase):
                 string=None,
                 decimal=None,
                 enum=None,
+                reversed_enum=None,
                 date=None,
                 datetime=None,
                 timedelta=None,
@@ -199,7 +215,8 @@ class TortoiseConverterTest(TestCase):
             'datetime': 1577923445.0,
             'timedelta': 3600.0,
             'decimal': '1.23',
-            'enum': 'FOO',
+            'enum': 'V1',
+            'reversed_enum': 'K2',
             'id': 1,
             'string': 'test',
             'relation': {
@@ -208,7 +225,8 @@ class TortoiseConverterTest(TestCase):
                 'datetime': 1577923445.0,
                 'timedelta': 3600.0,
                 'decimal': '1.23',
-                'enum': 'BAR',
+                'enum': 'V1',
+                'reversed_enum': 'K2',
                 'id': 2,
             },
         }
@@ -222,7 +240,8 @@ class TortoiseConverterTest(TestCase):
                 id=1,
                 string='test',
                 decimal=Decimal('1.23'),
-                enum=TestEnum.FOO,
+                enum=TestEnum.K1,
+                reversed_enum=TestReversedEnum.K2,
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),
@@ -237,7 +256,8 @@ class TortoiseConverterTest(TestCase):
                 id=2,
                 string='test',
                 decimal=Decimal('1.23'),
-                enum=TestEnum.BAR,
+                enum=TestEnum.K1,
+                reversed_enum=TestReversedEnum.K2,
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),
