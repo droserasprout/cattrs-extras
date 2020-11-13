@@ -1,4 +1,3 @@
-
 import unittest
 from decimal import Decimal
 from enum import Enum

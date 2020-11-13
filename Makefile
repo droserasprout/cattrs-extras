@@ -6,7 +6,7 @@ ci: all
 
 # NOTE: MacOS default, set to `python` in Linux environments
 PYTHON = `pyenv which python`
-POETRY_VERSION = 1.1.4
+POETRY_VERSION = 1.1.3
 POETRY = ${PYTHON} ${HOME}/.poetry/bin/poetry
 
 PROJECT = cattrs-extras

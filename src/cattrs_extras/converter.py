@@ -27,6 +27,10 @@ class StructureError(ValueError):
     pass
 
 
+class PEP563NotImplementedError(StructureError, NotImplementedError):
+    pass
+
+
 class Converter(cattr.Converter):
     """cattrs converter patched to correctly load complex attrs structures.
 
@@ -83,7 +87,10 @@ class Converter(cattr.Converter):
         """
         for attrib in attrs_class.__attrs_attrs__:  # type: ignore
             if isinstance(attrib.type, str):
-                object.__setattr__(attrib, 'type', eval(attrib.type))  # pylint: disable=eval-used
+                try:
+                    object.__setattr__(attrib, 'type', eval(attrib.type))  # pylint: disable=eval-used
+                except NameError:
+                    raise PEP563NotImplementedError('`Postponed Evaluation of Annotations is not supported')
 
     def _get_dis_func(self, union: Type) -> Callable[..., Type]:
         """Fetch or try creating a disambiguation function for a Union.
