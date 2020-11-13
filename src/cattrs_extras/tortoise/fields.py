@@ -36,19 +36,21 @@ class ReversedCharEnumFieldInstance(CharField):
         self.enum_type = enum_type
 
     def to_python_value(self, value: Union[Enum, str, None]) -> Union[Enum, None]:
-        if isinstance(value, Enum) or value is None:
+        if value is None:
+            return None
+        if isinstance(value, Enum):
             return value
         return self.enum_type[value]
 
-    def to_db_value(self, value: Union[Enum, None, str], instance: Union[Type[Model], Model]) -> Union[str, None]:
+    def to_db_value(self, value: Optional[Any], instance: Union[Type[Model], Model]) -> Union[str, None]:
+        if value is None:
+            return None
         if isinstance(value, Enum):
-            return str(value.name)
-        if isinstance(value, str):
-            return str(self.enum_type[value].name)
-        return value
+            return value.name
+        return self.enum_type[value].name
 
 
-def ReversedCharEnumField(
+def ReversedCharEnumField(  # pylint: disable=invalid-name
     enum_type: Type[CharEnumType],
     description: Optional[str] = None,
     max_length: int = 0,

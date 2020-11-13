@@ -6,7 +6,6 @@ from datetime import timedelta
 from datetime import timezone
 from decimal import Decimal
 from enum import Enum
-from enum import EnumMeta
 from typing import Any
 from typing import Callable
 from typing import Mapping
@@ -19,7 +18,6 @@ from attr import fields
 from dateutil.parser._parser import ParserError  # type: ignore
 from pytimeparse.timeparse import timeparse  # type: ignore
 from typing_extensions import Literal
-from typing_extensions import NewType
 from typing_extensions import get_args
 
 T = TypeVar('T')  # pylint: disable=invalid-name
