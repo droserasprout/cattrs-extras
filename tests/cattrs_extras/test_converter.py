@@ -10,12 +10,18 @@ from typing import Union
 from attr import dataclass
 
 from cattrs_extras.converter import Converter
+from cattrs_extras.converter import ReversedEnum
 from cattrs_extras.converter import StructureError
 
 
 class TestEnum(Enum):
-    A = 'A'
-    B = 'B'
+    K1 = 'V1'
+    K2 = 'V2'
+
+
+class TestReversedEnum(ReversedEnum):
+    K1 = 'V1'
+    K2 = 'V2'
 
 
 @dataclass(kw_only=True)
@@ -30,6 +36,7 @@ class TestDataclass:
     bool_value: Optional[bool] = None
     decimal_value: Optional[Decimal] = None
     enum_value: Optional[TestEnum] = None
+    reversed_enum_value: Optional[TestReversedEnum] = None
     list_value: Optional[List[str]] = None
     dict_value: Optional[Dict[str, str]] = None
     attrs_value: Optional[TestNestedDataclass] = None

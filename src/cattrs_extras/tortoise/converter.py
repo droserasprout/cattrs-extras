@@ -14,6 +14,7 @@ import tortoise
 from tortoise import fields
 
 from cattrs_extras.converter import Converter
+from cattrs_extras.tortoise.fields import ReversedCharEnumFieldInstance
 
 JSONType = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -51,7 +52,7 @@ class TortoiseConverter(Converter):
                     known_type = Optional[date] if field.null else date
                 elif isinstance(field, fields.TimeDeltaField):
                     known_type = Optional[timedelta] if field.null else timedelta
-                elif isinstance(field, fields.data.CharEnumFieldInstance):
+                elif isinstance(field, (fields.data.CharEnumFieldInstance, ReversedCharEnumFieldInstance)):
                     known_type = Optional[field.enum_type] if field.null else field.enum_type
 
                 if known_type is not None:

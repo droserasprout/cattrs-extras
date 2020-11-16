@@ -5,6 +5,7 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 from decimal import Decimal
+from enum import Enum
 from typing import Any
 from typing import Callable
 from typing import Mapping
@@ -21,6 +22,10 @@ from typing_extensions import get_args
 
 T = TypeVar('T')  # pylint: disable=invalid-name
 NoneType = type(None)
+
+
+class ReversedEnum(Enum):
+    ...
 
 
 class StructureError(ValueError):
@@ -48,6 +53,8 @@ class Converter(cattr.Converter):
         self.register_unstructure_hook(date, self._unstructure_date)
         self.register_structure_hook(timedelta, self._structure_timedelta)
         self.register_unstructure_hook(timedelta, self._unstructure_timedelta)
+        self.register_structure_hook(ReversedEnum, self._structure_reversed_enum)
+        self.register_unstructure_hook(ReversedEnum, self._unstructure_reversed_enum)
 
     def structure_attrs_fromdict(self, obj: Mapping, cl: Type[T]) -> T:
         """Instantiate an attrs class from a mapping.
@@ -183,3 +190,11 @@ class Converter(cattr.Converter):
     @staticmethod
     def _unstructure_timedelta(obj: timedelta) -> float:
         return obj.total_seconds()
+
+    @staticmethod
+    def _structure_reversed_enum(obj: str, cls: Type[ReversedEnum]) -> ReversedEnum:
+        return cls[obj]
+
+    @staticmethod
+    def _unstructure_reversed_enum(obj: ReversedEnum) -> str:
+        return obj.name
