@@ -83,3 +83,4 @@ assert raw_apple == {'id': None, 'weight': '200.5', 'color': 'RED', 'best_before
 ## Limitations
 
 * [PEP 563 – Postponed Evaluation of Annotations](https://www.python.org/dev/peps/pep-0563/) is not supported at the moment. Attempt to import `__future__.annotations` in module containing models will lead to exception. However you can still use strings as typehints.
+* Backward relations in Tortoise models are ignored during structuring even if fetched. Not sure if we should fix it.

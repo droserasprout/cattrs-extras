@@ -61,6 +61,11 @@ class TortoiseConverter(Converter):
                         cl=known_type,  # type: ignore
                     )
 
+                # FIXME: tortoise.exceptions.ConfigurationError: You can't set backward relations through init, change related model instead
+                # Should we try to hack it somehow or just ignore backward relations even if fetched?
+                elif isinstance(field, fields.relational.BackwardFKRelation):
+                    continue
+
                 elif isinstance(field, fields.relational.RelationalField) and field_value:
                     # FIXME: Hinted as Type['Model']
                     if isinstance(field.model, str):
