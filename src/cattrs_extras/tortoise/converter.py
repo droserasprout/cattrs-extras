@@ -46,6 +46,8 @@ class TortoiseConverter(Converter):
             if field_name in obj:
 
                 known_type = None
+                if isinstance(field, fields.BooleanField):
+                    known_type = Optional[bool] if field.null else bool
                 if isinstance(field, fields.DatetimeField):
                     known_type = Optional[datetime] if field.null else datetime
                 elif isinstance(field, fields.DateField):

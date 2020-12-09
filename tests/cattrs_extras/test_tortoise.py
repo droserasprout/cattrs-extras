@@ -145,7 +145,7 @@ class TortoiseConverterTest(TestCase):
     def test_tortoise_structure_humanreadable(self):
         # Arrange
         json = {
-            'bool': 'true',
+            'bool': 'false',
             'date': '2020-01-01',
             'datetime': '2020-01-01T00:00:00',
             'timedelta': '1h',
@@ -170,7 +170,7 @@ class TortoiseConverterTest(TestCase):
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),
-                bool=True,
+                bool=False,
             ),
             model,
         )
