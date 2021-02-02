@@ -13,4 +13,4 @@ jobs:
         with:
           fetch-depth: 1
       - name: Run Makefile
-        run: make all PYTHON=python
+        run: make all PYTHON=python3
