@@ -4,7 +4,15 @@ version = "0.0.0"
 description = "Advanced converters for cattrs"
 authors = ["Lev Gorodetskiy <github@droserasprout.space>"]
 homepage = "https://github.com/droserasprout/cattrs-extras"
-repository = "git@github.com:droserasprout/cattrs-extras.git"
+repository = "https://github.com/droserasprout/cattrs-extras"
+keywords = ["tortoise", "cattrs", "attrs", "serialization", "dataclass"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development",
+    "Typing :: Typed"
+]
 packages = [
     { include = "cattrs_extras", from = "src" },
 ]
