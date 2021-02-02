@@ -3,6 +3,7 @@ name = "cattrs-extras"
 version = "0.1.0"
 description = "Advanced converters for cattrs"
 authors = ["Lev Gorodetskiy <github@droserasprout.space>"]
+readme = "README.md"
 homepage = "https://github.com/droserasprout/cattrs-extras"
 repository = "https://github.com/droserasprout/cattrs-extras"
 keywords = ["tortoise", "cattrs", "attrs", "serialization", "dataclass"]
