@@ -51,31 +51,31 @@ class ConverterTest(unittest.TestCase):
             [
                 {'int_value': 'not_an_int'},
                 "Cannot structure TestDataclass: "
-                "not_an_int is not an instance of typing.Union[int, NoneType]"],
+                "not_an_int is not an instance of typing.Optional[int]"],
             [
                 {'float_value': 'not_a_float'},
                 "Cannot structure TestDataclass: "
-                "not_a_float is not an instance of typing.Union[float, NoneType]"],
+                "not_a_float is not an instance of typing.Optional[float]"],
             [
                 {'bool_value': 'not_a_bool'},
                 "Cannot structure TestDataclass: "
-                "not_a_bool is not an instance of typing.Union[bool, NoneType]"],
+                "not_a_bool is not an instance of typing.Optional[bool]"],
             [
                 {'decimal_value': 'not_a_decimal'},
                 "Cannot structure TestDataclass: "
-                "not_a_decimal is not an instance of typing.Union[decimal.Decimal, NoneType]"],
+                "not_a_decimal is not an instance of typing.Optional[decimal.Decimal]"],
             [
                 {'enum_value': 'not_an_enum'},
                 "Cannot structure TestDataclass: "
-                "not_an_enum is not an instance of typing.Union[tests.cattrs_extras.test_converter.TestEnum, NoneType]"],
+                "not_an_enum is not an instance of typing.Optional[tests.cattrs_extras.test_converter.TestEnum]"],
             [
                 {'dict_value': 'not_a_dict'},
                 "Cannot structure TestDataclass: "
-                "not_a_dict is not an instance of typing.Union[typing.Dict[str, str], NoneType]"],
+                "not_a_dict is not an instance of typing.Optional[typing.Dict[str, str]]"],
             [
                 {'attrs_value': 'not_an_attrs'},
                 "Cannot structure TestDataclass: "
-                "not_an_attrs is not an instance of typing.Union[tests.cattrs_extras.test_converter.TestNestedDataclass, NoneType]"],
+                "not_an_attrs is not an instance of typing.Optional[tests.cattrs_extras.test_converter.TestNestedDataclass]"],
             [
                 {'attrs_value': {'int_value': 'not_an_int'}},
                 "Cannot structure TestNestedDataclass: "

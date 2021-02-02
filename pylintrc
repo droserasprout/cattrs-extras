@@ -2,7 +2,7 @@
 max-line-length=140
 
 [MESSAGES CONTROL]
-disable=missing-docstring
+disable=missing-docstring,unsubscriptable-object
 
 [BASIC]
 good-names=a, b, c, d

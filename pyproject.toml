@@ -12,10 +12,11 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.7"
 cattrs = "^1.0.0"
-pytimeparse = "^1.1.8"
-tortoise-orm = {version = "^0.16.17", optional = true}
-typing-extensions = "^3.7.4"
 dateutils = "^0.6.12"
+pytimeparse = "^1.1.8"
+tortoise-orm = {version = "^0.16.20", optional = true}
+typing-extensions = "^3.7.4"
+typing-inspect = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 bump2version = "^1.0"

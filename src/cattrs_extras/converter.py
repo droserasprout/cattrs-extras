@@ -41,6 +41,7 @@ class Converter(cattr.Converter):
 
     Keep in mind that __future__.annotations import is not supported when using this class!
     """
+
     def __init__(self):
         super().__init__()
 
@@ -50,6 +51,7 @@ class Converter(cattr.Converter):
         self.register_structure_hook(Literal[True], self._structure_literal_true)
         self.register_structure_hook(Literal[False], self._structure_literal_false)
         self.register_structure_hook(bool, self._structure_bool)
+        self.register_structure_hook(NoneType, lambda obj, cls: obj)
 
         self.register_structure_hook(datetime, self._structure_datetime)
         self.register_unstructure_hook(datetime, self._unstructure_datetime)
@@ -96,10 +98,11 @@ class Converter(cattr.Converter):
             if isinstance(attrib.type, str):
                 try:
                     object.__setattr__(attrib, 'type', eval(attrib.type))  # pylint: disable=eval-used
-                except NameError:
-                    raise PEP563NotImplementedError('`Postponed Evaluation of Annotations is not supported')
+                except NameError as exc:
+                    raise PEP563NotImplementedError('`Postponed Evaluation of Annotations is not supported') from exc
 
-    def _get_dis_func(self, union: Type) -> Callable[..., Type]:
+    @staticmethod
+    def _get_dis_func(union: Type) -> Callable[..., Type]:
         """Fetch or try creating a disambiguation function for a Union.
 
         This algorithm is more strict than default Converter's one and will fail if data contains redundant attributes.
@@ -111,7 +114,8 @@ class Converter(cattr.Converter):
 
         if not all(hasattr(e, '__attrs_attrs__') for e in union_types):
             raise StructureError(
-                f'Cannot structure {union}: only unions of attr classes are supported currently. Register a structure hook manually.')
+                f'Cannot structure {union}: only unions of attr classes are supported currently. Register a structure hook manually.'
+            )
 
         if len(union_types) < 2:
             raise StructureError(f'Cannot structure {union}: at least two classes required.')
@@ -184,12 +188,12 @@ class Converter(cattr.Converter):
 
     @staticmethod
     def _unstructure_date(obj: date) -> float:
-        return datetime(obj.year, obj.month, obj.day).timestamp()
+        return datetime(obj.year, obj.month, obj.day, tzinfo=timezone.utc).timestamp()
 
     @staticmethod
     def _structure_timedelta(obj: Any, cls: Type) -> timedelta:  # pylint: disable=unused-argument
-        with suppress(TypeError):
-            return timedelta(seconds=obj)
+        with suppress(ValueError, TypeError):
+            return timedelta(seconds=int(obj))
         with suppress(TypeError):
             return timedelta(seconds=timeparse(obj))
         raise ValueError
