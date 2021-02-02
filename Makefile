@@ -22,7 +22,7 @@ update:
 
 install:
 	make prepare
-	${POETRY} install -vvv --remove-untracked `if [ "${DEV}" = "0" ]; then echo "--no-dev"; fi`
+	${POETRY} install -vvv --remove-untracked --extras tortoise `if [ "${DEV}" = "0" ]; then echo "--no-dev"; fi`
 
 isort:
 	${POETRY} run isort --recursive src tests
