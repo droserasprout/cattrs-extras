@@ -1,7 +1,8 @@
-.PHONY: prepare update install lint mypy test build publish clean all ci
+.PHONY: prepare update install isort black pylint mypy test build publish clean lint all ci
 .DEFAULT_GOAL := all
 
-all: install lint mypy test build
+lint: isort black pylint mypy
+all: install lint test build
 ci: all
 
 # NOTE: MacOS default, set to `python` in Linux environments
@@ -23,12 +24,18 @@ install:
 	make prepare
 	${POETRY} install -vvv --remove-untracked `if [ "${DEV}" = "0" ]; then echo "--no-dev"; fi`
 
-lint:
+isort:
 	${POETRY} run isort --recursive src tests
+
+black:
+	${POETRY} run black --skip-string-normalization src tests
+
+pylint:
 	${POETRY} run pylint src tests || ${POETRY} run pylint-exit $$?
 
 mypy:
 	${POETRY} run mypy src tests
+
 
 test:
 	${POETRY} run nosetests -v --with-timer --with-coverage tests --cover-package $(PACKAGE)

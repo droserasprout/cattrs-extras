@@ -1,3 +1,4 @@
+import collections
 import importlib
 from contextlib import suppress
 from datetime import date
@@ -35,7 +36,9 @@ class TortoiseConverter(Converter):
         self.register_structure_hook(tortoise.Model, self._structure_tortoise_model)
         self.register_unstructure_hook(tortoise.Model, self._unstructure_tortoise_model)
 
-    def _structure_tortoise_model(self, obj: Dict[str, Any], cls: Type[tortoise.Model]) -> tortoise.Model:
+    def _structure_tortoise_model(
+        self, obj: Dict[str, Any], cls: Type[tortoise.Model]
+    ) -> tortoise.Model:
 
         result_dict: Dict[str, Any] = {}
         saved_in_db = False
@@ -54,10 +57,14 @@ class TortoiseConverter(Converter):
                 [
                     field.null is False,
                     field_value is None,
-                    not (isinstance(field, fields.DatetimeField) and field.auto_now_add),
+                    not (
+                        isinstance(field, fields.DatetimeField) and field.auto_now_add
+                    ),
                 ]
             ):
-                raise StructureError(f'Cannot structure {cls.__qualname__}: "{field_name}" field is not nullable')
+                raise StructureError(
+                    f'Cannot structure {cls.__qualname__}: "{field_name}" field is not nullable'
+                )
 
             if field_name not in obj:
                 continue
@@ -71,8 +78,13 @@ class TortoiseConverter(Converter):
                 known_type = Optional[date] if field.null else date
             elif isinstance(field, fields.TimeDeltaField):
                 known_type = Optional[timedelta] if field.null else timedelta
-            elif isinstance(field, (fields.data.CharEnumFieldInstance, ReversedCharEnumFieldInstance)):
-                known_type = Optional[field.enum_type] if field.null else field.enum_type
+            elif isinstance(
+                field,
+                (fields.data.CharEnumFieldInstance, ReversedCharEnumFieldInstance),
+            ):
+                known_type = (
+                    Optional[field.enum_type] if field.null else field.enum_type
+                )
 
             if known_type is not None:
                 result_dict[field_name] = self.structure(
@@ -119,7 +131,9 @@ class TortoiseConverter(Converter):
 
             if isinstance(field, fields.relational.BackwardFKRelation):
                 try:
-                    result_dict[field_name] = self.unstructure(field_value.related_objects)
+                    result_dict[field_name] = self.unstructure(
+                        field_value.related_objects
+                    )
                 except tortoise.exceptions.NoValuesFetched:
                     pass
 
@@ -152,21 +166,29 @@ class TortoiseConverter(Converter):
             )
 
         if len(union_types) < 2:
-            raise StructureError(f'Cannot structure {union}: at least two classes required.')
+            raise StructureError(
+                f'Cannot structure {union}: at least two classes required.'
+            )
 
         cls_and_attrs = [(cl, set(at for at in cl._meta.fields)) for cl in union_types]
 
         if len([attrs for _, attrs in cls_and_attrs if len(attrs) == 0]) > 1:
-            raise StructureError(f'Cannot structure {union}: at least two classes have no attributes.')
+            raise StructureError(
+                f'Cannot structure {union}: at least two classes have no attributes.'
+            )
 
         cls_and_attrs.sort(key=lambda c_a: len(c_a[1]))
 
         def _dis_func(data: Mapping) -> Type:
-            if not isinstance(data, Mapping):  # pylint: disable=isinstance-second-argument-not-valid-type)
-                raise StructureError(f'Cannot structure {union}: only mappings are supported as input.')
+            if not isinstance(data, collections.Mapping):
+                raise StructureError(
+                    f'Cannot structure {union}: only mappings are supported as input.'
+                )
             for cls, cls_keys in cls_and_attrs:
                 if all([data_key in cls_keys for data_key in data]):
                     return cls
-            raise StructureError(f'Cannot structure {union}: {data} does not match any of generic arguments')
+            raise StructureError(
+                f'Cannot structure {union}: {data} does not match any of generic arguments'
+            )
 
         return _dis_func

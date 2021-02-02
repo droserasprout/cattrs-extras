@@ -1,3 +1,4 @@
+import collections
 import sys
 from contextlib import suppress
 from datetime import date
@@ -81,7 +82,11 @@ class Converter(cattr.Converter):
                 message = f"Cannot structure {human_class}: {str(exc)[11:]}"
             else:
                 value = last_frame_locals['val']
-                human_type = getattr(last_frame_locals['type_'], '__name__', str(last_frame_locals['type_']))
+                human_type = getattr(
+                    last_frame_locals['type_'],
+                    '__name__',
+                    str(last_frame_locals['type_']),
+                )
                 message = f"Cannot structure {human_class}: {value} is not an instance of {human_type}"
 
             raise StructureError(message) from exc
@@ -97,9 +102,13 @@ class Converter(cattr.Converter):
         for attrib in attrs_class.__attrs_attrs__:  # type: ignore
             if isinstance(attrib.type, str):
                 try:
-                    object.__setattr__(attrib, 'type', eval(attrib.type))  # pylint: disable=eval-used
+                    object.__setattr__(
+                        attrib, 'type', eval(attrib.type)  # pylint: disable=eval-used
+                    )
                 except NameError as exc:
-                    raise PEP563NotImplementedError('`Postponed Evaluation of Annotations is not supported') from exc
+                    raise PEP563NotImplementedError(
+                        '`Postponed Evaluation of Annotations is not supported'
+                    ) from exc
 
     @staticmethod
     def _get_dis_func(union: Type) -> Callable[..., Type]:
@@ -118,22 +127,30 @@ class Converter(cattr.Converter):
             )
 
         if len(union_types) < 2:
-            raise StructureError(f'Cannot structure {union}: at least two classes required.')
+            raise StructureError(
+                f'Cannot structure {union}: at least two classes required.'
+            )
 
         cls_and_attrs = [(cl, set(at.name for at in fields(cl))) for cl in union_types]
 
         if len([attrs for _, attrs in cls_and_attrs if len(attrs) == 0]) > 1:
-            raise StructureError(f'Cannot structure {union}: at least two classes have no attributes.')
+            raise StructureError(
+                f'Cannot structure {union}: at least two classes have no attributes.'
+            )
 
         cls_and_attrs.sort(key=lambda c_a: len(c_a[1]))
 
         def _dis_func(data: Mapping) -> Type:
-            if not isinstance(data, Mapping):  # pylint: disable=isinstance-second-argument-not-valid-type)
-                raise StructureError(f'Cannot structure {union}: only mappings are supported as input.')
+            if not isinstance(data, collections.Mapping):
+                raise StructureError(
+                    f'Cannot structure {union}: only mappings are supported as input.'
+                )
             for cls, cls_keys in cls_and_attrs:
                 if all([data_key in cls_keys for data_key in data]):
                     return cls
-            raise StructureError(f'Cannot structure {union}: {data} does not match any of generic arguments')
+            raise StructureError(
+                f'Cannot structure {union}: {data} does not match any of generic arguments'
+            )
 
         return _dis_func
 
@@ -146,13 +163,17 @@ class Converter(cattr.Converter):
         return str(obj)
 
     @staticmethod
-    def _structure_literal_true(obj: Any, cls: Type) -> Literal[True]:  # pylint: disable=unused-argument
+    def _structure_literal_true(
+        obj: Any, cls: Type  # pylint: disable=unused-argument
+    ) -> Literal[True]:
         if obj in ('true', 'True', True):
             return True
         raise ValueError
 
     @staticmethod
-    def _structure_literal_false(obj: Any, cls: Type) -> Literal[False]:  # pylint: disable=unused-argument
+    def _structure_literal_false(
+        obj: Any, cls: Type  # pylint: disable=unused-argument
+    ) -> Literal[False]:
         if obj in ('false', 'False', False):
             return False
         raise ValueError
@@ -166,7 +187,9 @@ class Converter(cattr.Converter):
         raise ValueError
 
     @staticmethod
-    def _structure_datetime(obj: Any, cls: Type) -> datetime:  # pylint: disable=unused-argument
+    def _structure_datetime(
+        obj: Any, cls: Type  # pylint: disable=unused-argument
+    ) -> datetime:
         with suppress(ValueError, TypeError):
             return datetime.utcfromtimestamp(float(obj)).replace(tzinfo=timezone.utc)
         with suppress(ParserError):
@@ -191,7 +214,9 @@ class Converter(cattr.Converter):
         return datetime(obj.year, obj.month, obj.day, tzinfo=timezone.utc).timestamp()
 
     @staticmethod
-    def _structure_timedelta(obj: Any, cls: Type) -> timedelta:  # pylint: disable=unused-argument
+    def _structure_timedelta(
+        obj: Any, cls: Type  # pylint: disable=unused-argument
+    ) -> timedelta:
         with suppress(ValueError, TypeError):
             return timedelta(seconds=int(obj))
         with suppress(TypeError):

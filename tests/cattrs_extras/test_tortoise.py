@@ -38,7 +38,6 @@ class TestModel(Model):
 
 
 class TortoiseConverterTest(TestCase):
-
     def setUp(self) -> None:
         self.converter = TortoiseConverter('tests.cattrs_extras.test_tortoise')
 
@@ -71,7 +70,7 @@ class TortoiseConverterTest(TestCase):
                 'reversed_enum': 'K2',
                 'id': 1,
                 'relation': None,
-                'string': 'test'
+                'string': 'test',
             },
             json,
         )
@@ -104,7 +103,7 @@ class TortoiseConverterTest(TestCase):
                 'reversed_enum': None,
                 'id': None,
                 'relation': None,
-                'string': None
+                'string': None,
             },
             json,
         )
@@ -120,7 +119,7 @@ class TortoiseConverterTest(TestCase):
             'enum': 'V1',
             'reversed_enum': 'K2',
             'id': 1,
-            'string': 'test'
+            'string': 'test',
         }
 
         # Act
