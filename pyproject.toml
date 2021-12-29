@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cattrs-extras"
-version = "0.1.1"
+version = "0.2.0"
 description = "Advanced converters for cattrs"
 authors = ["Lev Gorodetskiy <github@droserasprout.space>"]
 readme = "README.md"
