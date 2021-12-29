@@ -51,6 +51,7 @@ class Converter(cattr.Converter):
 
         self.register_structure_hook(Literal[True], self._structure_literal_true)
         self.register_structure_hook(Literal[False], self._structure_literal_false)
+        self.register_structure_hook(Literal, self._structure_literal)
         self.register_structure_hook(bool, self._structure_bool)
         self.register_structure_hook(NoneType, lambda obj, cls: obj)
 
@@ -69,7 +70,7 @@ class Converter(cattr.Converter):
         Raises human-readable StructureError exceptions on failure.
         """
         try:
-            self._eval_str_types(cl)
+            # self._eval_str_types(cl)
             return super().structure_attrs_fromdict(obj or {}, cl)
         # NOTE: If exception has occurred while structuring nested attrs class raise it directly without further processing
         except StructureError:
@@ -79,14 +80,14 @@ class Converter(cattr.Converter):
             human_class = last_frame_locals['cl'].__qualname__
 
             if isinstance(exc, TypeError) and 'required keyword-only' in str(exc):
-                message = f"Cannot structure {human_class}: {str(exc)[11:]}"
+                exc_message = ' '.join(str(exc).split(' ')[1:])
+                message = f"Cannot structure {human_class}: {exc_message}"
             else:
                 value = last_frame_locals['val']
-                human_type = getattr(
-                    last_frame_locals['type_'],
-                    '__name__',
-                    str(last_frame_locals['type_']),
-                )
+                try:
+                    human_type = last_frame_locals['a']['type'].__name__
+                except (KeyError, TypeError, AttributeError):
+                    human_type = str(last_frame_locals['a'].type)
                 message = f"Cannot structure {human_class}: {value} is not an instance of {human_type}"
 
             raise StructureError(message) from exc
@@ -141,7 +142,7 @@ class Converter(cattr.Converter):
         cls_and_attrs.sort(key=lambda c_a: len(c_a[1]))
 
         def _dis_func(data: Mapping) -> Type:
-            if not isinstance(data, collections.Mapping):
+            if not isinstance(data, Mapping):
                 raise StructureError(
                     f'Cannot structure {union}: only mappings are supported as input.'
                 )
@@ -176,6 +177,14 @@ class Converter(cattr.Converter):
     ) -> Literal[False]:
         if obj in ('false', 'False', False):
             return False
+        raise ValueError
+
+    @staticmethod
+    def _structure_literal(
+        obj: Any, cls: Type  # pylint: disable=unused-argument
+    ) -> Any:
+        if obj == get_args(cls)[0]:
+            return obj
         raise ValueError
 
     @staticmethod

@@ -132,7 +132,7 @@ class TortoiseConverter(Converter):
             if isinstance(field, fields.relational.BackwardFKRelation):
                 try:
                     result_dict[field_name] = self.unstructure(
-                        field_value.related_objects
+                        field_value.related_objects  # type: ignore
                     )
                 except tortoise.exceptions.NoValuesFetched:
                     pass

@@ -13,32 +13,32 @@ from cattrs_extras.converter import ReversedEnum
 from cattrs_extras.converter import StructureError
 
 
-class TestEnum(Enum):
+class SomeEnum(Enum):
     K1 = 'V1'
     K2 = 'V2'
 
 
-class TestReversedEnum(ReversedEnum):
+class SomeReversedEnum(ReversedEnum):
     K1 = 'V1'
     K2 = 'V2'
 
 
 @dataclass(kw_only=True)
-class TestNestedDataclass:
+class SomeNestedDataclass:
     int_value: int
 
 
 @dataclass(kw_only=True)
-class TestDataclass:
+class SomeDataclass:
     int_value: Optional[int] = None
     float_value: Optional[float] = None
     bool_value: Optional[bool] = None
     decimal_value: Optional[Decimal] = None
-    enum_value: Optional[TestEnum] = None
-    reversed_enum_value: Optional[TestReversedEnum] = None
+    enum_value: Optional[SomeEnum] = None
+    reversed_enum_value: Optional[SomeReversedEnum] = None
     list_value: Optional[List[str]] = None
     dict_value: Optional[Dict[str, str]] = None
-    attrs_value: Optional[TestNestedDataclass] = None
+    attrs_value: Optional[SomeNestedDataclass] = None
 
 
 class ConverterTest(unittest.TestCase):
@@ -50,47 +50,47 @@ class ConverterTest(unittest.TestCase):
         subtest_params = [
             [
                 {'int_value': 'not_an_int'},
-                "Cannot structure TestDataclass: "
+                "Cannot structure SomeDataclass: "
                 "not_an_int is not an instance of typing.Optional[int]",
             ],
             [
                 {'float_value': 'not_a_float'},
-                "Cannot structure TestDataclass: "
+                "Cannot structure SomeDataclass: "
                 "not_a_float is not an instance of typing.Optional[float]",
             ],
             [
                 {'bool_value': 'not_a_bool'},
-                "Cannot structure TestDataclass: "
+                "Cannot structure SomeDataclass: "
                 "not_a_bool is not an instance of typing.Optional[bool]",
             ],
             [
                 {'decimal_value': 'not_a_decimal'},
-                "Cannot structure TestDataclass: "
+                "Cannot structure SomeDataclass: "
                 "not_a_decimal is not an instance of typing.Optional[decimal.Decimal]",
             ],
             [
                 {'enum_value': 'not_an_enum'},
-                "Cannot structure TestDataclass: "
-                "not_an_enum is not an instance of typing.Optional[tests.cattrs_extras.test_converter.TestEnum]",
+                "Cannot structure SomeDataclass: "
+                "not_an_enum is not an instance of typing.Optional[tests.cattrs_extras.test_converter.SomeEnum]",
             ],
             [
                 {'dict_value': 'not_a_dict'},
-                "Cannot structure TestDataclass: "
+                "Cannot structure SomeDataclass: "
                 "not_a_dict is not an instance of typing.Optional[typing.Dict[str, str]]",
             ],
             [
                 {'attrs_value': 'not_an_attrs'},
-                "Cannot structure TestDataclass: "
-                "not_an_attrs is not an instance of typing.Optional[tests.cattrs_extras.test_converter.TestNestedDataclass]",
+                "Cannot structure SomeDataclass: "
+                "not_an_attrs is not an instance of typing.Optional[tests.cattrs_extras.test_converter.SomeNestedDataclass]",
             ],
             [
                 {'attrs_value': {'int_value': 'not_an_int'}},
-                "Cannot structure TestNestedDataclass: "
-                "not_an_int is not an instance of int",
+                "Cannot structure SomeNestedDataclass: "
+                "not_an_int is not an instance of <class 'int'>",
             ],
             [
                 {'attrs_value': {}},
-                "Cannot structure TestNestedDataclass: "
+                "Cannot structure SomeNestedDataclass: "
                 "missing 1 required keyword-only argument: 'int_value'",
             ],
         ]
@@ -99,7 +99,7 @@ class ConverterTest(unittest.TestCase):
             with self.subTest():
                 # Act, Assert
                 try:
-                    self.converter.structure(data, TestDataclass)
+                    self.converter.structure(data, SomeDataclass)
                 except StructureError as exc:
                     self.assertEqual(message, str(exc))
 

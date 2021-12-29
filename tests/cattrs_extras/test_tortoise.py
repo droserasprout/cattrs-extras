@@ -13,25 +13,25 @@ from cattrs_extras.tortoise.fields import ReversedCharEnumField
 from cattrs_extras.tortoise.model import Model
 
 
-class TestEnum(Enum):
+class SomeEnum(Enum):
     K1 = 'V1'
 
 
-class TestReversedEnum(ReversedEnum):
+class SomeReversedEnum(ReversedEnum):
     K2 = 'V2'
 
 
-class TestModel(Model):
+class SomeModel(Model):
     id = fields.IntField(pk=True)
     string = fields.CharField(255, null=True)
     decimal = fields.DecimalField(20, 10, null=True)
-    enum = fields.CharEnumField(TestEnum, null=True)
-    reversed_enum = ReversedCharEnumField(TestReversedEnum, null=True)
+    enum = fields.CharEnumField(SomeEnum, null=True)
+    reversed_enum = ReversedCharEnumField(SomeReversedEnum, null=True)
     date = fields.DateField(null=True)
     datetime = fields.DatetimeField(null=True)
     timedelta = fields.TimeDeltaField(null=True)
     bool = fields.BooleanField(null=True)
-    relation = fields.ForeignKeyField('models.TestModel', 'id', null=True)
+    relation = fields.ForeignKeyField('models.SomeModel', 'id', null=True)
 
     class Meta:  # pylint: disable=too-few-public-methods)
         table = 'test_models'
@@ -43,12 +43,12 @@ class TortoiseConverterTest(TestCase):
 
     def test_tortoise_unstructure(self):
         # Arrange
-        model = TestModel(
+        model = SomeModel(
             id=1,
             string='test',
             decimal=Decimal('1.23'),
-            enum=TestEnum.K1,
-            reversed_enum=TestReversedEnum.K2,
+            enum=SomeEnum.K1,
+            reversed_enum=SomeReversedEnum.K2,
             date=date(2020, 1, 2),
             datetime=datetime(2020, 1, 2, 3, 4, 5),
             timedelta=timedelta(hours=1),
@@ -77,7 +77,7 @@ class TortoiseConverterTest(TestCase):
 
     def test_tortoise_unstructure_optional(self):
         # Arrange
-        model = TestModel(
+        model = SomeModel(
             string=None,
             decimal=None,
             enum=None,
@@ -123,16 +123,16 @@ class TortoiseConverterTest(TestCase):
         }
 
         # Act
-        model = self.converter.structure(json, TestModel)
+        model = self.converter.structure(json, SomeModel)
 
         # Assert
         self.assertEqual(
-            TestModel(
+            SomeModel(
                 id=1,
                 string='test',
                 decimal=Decimal('1.23'),
-                enum=TestEnum.K1,
-                reversed_enum=TestReversedEnum.K2,
+                enum=SomeEnum.K1,
+                reversed_enum=SomeReversedEnum.K2,
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),
@@ -156,16 +156,16 @@ class TortoiseConverterTest(TestCase):
         }
 
         # Act
-        model = self.converter.structure(json, TestModel)
+        model = self.converter.structure(json, SomeModel)
 
         # Assert
         self.assertEqual(
-            TestModel(
+            SomeModel(
                 id=1,
                 string='test',
                 decimal=Decimal('1.23'),
-                enum=TestEnum.K1,
-                reversed_enum=TestReversedEnum.K2,
+                enum=SomeEnum.K1,
+                reversed_enum=SomeReversedEnum.K2,
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),
@@ -189,11 +189,11 @@ class TortoiseConverterTest(TestCase):
         }
 
         # Act
-        model = self.converter.structure(json, TestModel)
+        model = self.converter.structure(json, SomeModel)
 
         # Assert
         self.assertEqual(
-            TestModel(
+            SomeModel(
                 string=None,
                 decimal=None,
                 enum=None,
@@ -231,16 +231,16 @@ class TortoiseConverterTest(TestCase):
         }
 
         # Act
-        model = self.converter.structure(json, TestModel)
+        model = self.converter.structure(json, SomeModel)
 
         # Assert
         self.assertEqual(
-            TestModel(
+            SomeModel(
                 id=1,
                 string='test',
                 decimal=Decimal('1.23'),
-                enum=TestEnum.K1,
-                reversed_enum=TestReversedEnum.K2,
+                enum=SomeEnum.K1,
+                reversed_enum=SomeReversedEnum.K2,
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),
@@ -251,12 +251,12 @@ class TortoiseConverterTest(TestCase):
         self.assertEqual(True, model._saved_in_db)
 
         self.assertEqual(
-            TestModel(
+            SomeModel(
                 id=2,
                 string='test',
                 decimal=Decimal('1.23'),
-                enum=TestEnum.K1,
-                reversed_enum=TestReversedEnum.K2,
+                enum=SomeEnum.K1,
+                reversed_enum=SomeReversedEnum.K2,
                 date=date(2020, 1, 2),
                 datetime=datetime(2020, 1, 2, 3, 4, 5),
                 timedelta=timedelta(hours=1),

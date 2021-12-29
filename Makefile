@@ -1,50 +1,41 @@
-.PHONY: prepare update install isort black pylint mypy test build publish clean lint all ci
+.PHONY: update install isort black pylint mypy test build publish clean lint all ci
 .DEFAULT_GOAL := all
 
 lint: isort black pylint mypy
 all: install lint test build
 ci: all
 
-# NOTE: MacOS default, set to `python` in Linux environments
-PYTHON = `pyenv which python`
-POETRY_VERSION = 1.1.4
-POETRY = ${PYTHON} ${HOME}/.poetry/bin/poetry
-
 PROJECT = cattrs-extras
 PACKAGE = cattrs_extras
 DEV ?= 1
 
-prepare:
-	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_VERSION=${POETRY_VERSION} ${PYTHON} -
-
 update:
-	${POETRY} update -vvv
+	poetry update
 
 install:
-	make prepare
-	${POETRY} install -vvv --remove-untracked --extras tortoise `if [ "${DEV}" = "0" ]; then echo "--no-dev"; fi`
+	poetry install --remove-untracked --extras tortoise `if [ "${DEV}" = "0" ]; then echo "--no-dev"; fi`
 
 isort:
-	${POETRY} run isort --recursive src tests
+	poetry run isort --recursive src tests
 
 black:
-	${POETRY} run black --skip-string-normalization src tests
+	poetry run black --skip-string-normalization src tests
 
 pylint:
-	${POETRY} run pylint src tests || ${POETRY} run pylint-exit $$?
+	poetry run pylint src tests || poetry run pylint-exit $$?
 
 mypy:
-	${POETRY} run mypy src tests
+	poetry run mypy src tests
 
 
 test:
-	${POETRY} run nosetests -v --with-timer --with-coverage tests --cover-package $(PACKAGE)
+	poetry run pytest --cov-report=term-missing --cov=cattrs_extras --cov-report=xml -v tests
 
 build:
-	${POETRY} build
+	poetry build
 
 publish:
-	${POETRY} publish --build
+	poetry publish --build
 
 clean:
 	rm -rf build dist .venv poetry.lock .mypy_cache
