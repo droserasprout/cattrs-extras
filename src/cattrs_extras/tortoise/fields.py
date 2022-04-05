@@ -22,9 +22,7 @@ class ReversedCharEnumFieldInstance(CharField):
 
         # Automatic description for the field if not specified by the user
         if description is None:
-            description = "\n".join([f"{e.name}: {str(e.value)}" for e in enum_type])[
-                :2048
-            ]
+            description = "\n".join([f"{e.name}: {str(e.value)}" for e in enum_type])[:2048]
 
         # Automatic CharField max_length
         if max_length == 0:
@@ -43,9 +41,7 @@ class ReversedCharEnumFieldInstance(CharField):
             return value
         return self.enum_type[value]
 
-    def to_db_value(
-        self, value: Optional[Any], instance: Union[Type[Model], Model]
-    ) -> Union[str, None]:
+    def to_db_value(self, value: Optional[Any], instance: Union[Type[Model], Model]) -> Union[str, None]:
         if value is None:
             return None
         if isinstance(value, Enum):

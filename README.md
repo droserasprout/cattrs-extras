@@ -12,9 +12,25 @@ This package contains advanced converter classes for [cattrs](https://github.com
 
 ## Installation
 
-```shell-script
-DEV=0 PYTHON=python make install  # remove PYTHON to use pyenv
-make build
+```text
+ ==> cattrs-extras makefile
+
+ DEV=1           Install dev dependencies
+
+all:             Run a whole CI pipeline (default)
+install:         Install project
+lint:            Lint with all tools
+isort:           Lint with isort
+black:           Lint with black
+flake:           Lint with flake8
+mypy:            Lint with mypy
+test:            Run test suite
+cover:           Print coverage for the current branch
+build:           Build wheel Python package
+release-patch:   Release patch version
+release-minor:   Release minor version
+release-major:   Release major version
+help:            Show this help
 ```
 
 ## Usage
@@ -55,7 +71,7 @@ assert raw_apple == {'weight': '200.5', 'color': 'RED', 'best_before': 158581800
 
 ## Tortoise ORM
 
-Important note: Tortoise ORM have chosen [pydantic](https://github.com/samuelcolvin/pydantic) as a serialization library so better to stick with it. However pydantic support is still WIP, you can check current status [here](https://tortoise-orm.readthedocs.io/en/latest/contrib/pydantic.html).
+Important note: Tortoise ORM has chosen [Pydantic](https://github.com/samuelcolvin/pydantic) as a serialization library, so better to stick with it. However, Pydantic support is still WIP; you can check the current status [here](https://tortoise-orm.readthedocs.io/en/latest/contrib/pydantic.html).
 
 ```python
 from cattrs_extras.tortoise.converter import TortoiseConverter
@@ -82,5 +98,5 @@ assert raw_apple == {'id': None, 'weight': '200.5', 'color': 'RED', 'best_before
 
 ## Limitations
 
-* [PEP 563 – Postponed Evaluation of Annotations](https://www.python.org/dev/peps/pep-0563/) is not supported at the moment. Attempt to import `__future__.annotations` in module containing models will lead to exception. However you can still use strings as typehints.
+* [PEP 563 – Postponed Evaluation of Annotations](https://www.python.org/dev/peps/pep-0563/) is not supported. Attempt to import `__future__.annotations` in module containing models will lead to exception. However, you can still use strings as typehints.
 * Backward relations in Tortoise models are ignored during structuring even if fetched. Not sure if we should fix it.

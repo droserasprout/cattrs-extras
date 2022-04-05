@@ -1,41 +1,57 @@
-.PHONY: update install isort black pylint mypy test build publish clean lint all ci
-.DEFAULT_GOAL := all
+## ==> cattrs-extras makefile
+.ONESHELL:
+.PHONY: test build docs
+.DEFAULT_GOAL: all
 
-lint: isort black pylint mypy
-all: install lint test build
-ci: all
+##
+## DEV=1           Install dev dependencies
+DEV=1
+##
 
-PROJECT = cattrs-extras
-PACKAGE = cattrs_extras
-DEV ?= 1
+all:            ## Run a whole CI pipeline (default)
+	make install lint test cover
 
-update:
-	poetry update
-
-install:
+install:        ## Install project
 	poetry install --remove-untracked --extras tortoise `if [ "${DEV}" = "0" ]; then echo "--no-dev"; fi`
 
-isort:
-	poetry run isort --recursive src tests
+lint:           ## Lint with all tools
+	make isort black flake mypy
 
-black:
-	poetry run black --skip-string-normalization src tests
+isort:          ## Lint with isort
+	poetry run isort src tests
 
-pylint:
-	poetry run pylint src tests || poetry run pylint-exit $$?
+black:          ## Lint with black
+	poetry run black src tests
 
-mypy:
+flake:          ## Lint with flake8
+	poetry run flakehell lint src tests
+
+mypy:           ## Lint with mypy
 	poetry run mypy src tests
 
+test:           ## Run test suite
+	poetry run pytest --cov-report=term-missing --cov=cattrs_extras --cov-report=xml -n auto --dist loadscope -s -v tests
 
-test:
-	poetry run pytest --cov-report=term-missing --cov=cattrs_extras --cov-report=xml -v tests
+cover:          ## Print coverage for the current branch
+	poetry run diff-cover coverage.xml
 
-build:
+build:          ## Build wheel Python package
 	poetry build
 
-publish:
-	poetry publish --build
+release-patch:  ## Release patch version
+	bumpversion patch
+	git push --tags
+	git push
 
-clean:
-	rm -rf build dist .venv poetry.lock .mypy_cache
+release-minor:  ## Release minor version
+	bumpversion minor
+	git push --tags
+	git push
+
+release-major:  ## Release major version
+	bumpversion major
+	git push --tags
+	git push
+
+help:           ## Show this help
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
