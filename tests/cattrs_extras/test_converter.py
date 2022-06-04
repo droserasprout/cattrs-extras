@@ -14,13 +14,13 @@ from cattrs_extras.converter import StructureError
 
 
 class SomeEnum(Enum):
-    K1 = 'V1'
-    K2 = 'V2'
+    K1 = "V1"
+    K2 = "V2"
 
 
 class SomeReversedEnum(ReversedEnum):
-    K1 = 'V1'
-    K2 = 'V2'
+    K1 = "V1"
+    K2 = "V2"
 
 
 @dataclass(kw_only=True)
@@ -49,49 +49,44 @@ class ConverterTest(unittest.TestCase):
         # Arrange
         subtest_params = [
             [
-                {'int_value': 'not_an_int'},
-                "Cannot structure SomeDataclass: "
-                "not_an_int is not an instance of typing.Optional[int]",
+                {"int_value": "not_an_int"},
+                "Cannot structure SomeDataclass: not_an_int is not an instance of typing.Optional[int]",
             ],
             [
-                {'float_value': 'not_a_float'},
-                "Cannot structure SomeDataclass: "
-                "not_a_float is not an instance of typing.Optional[float]",
+                {"float_value": "not_a_float"},
+                "Cannot structure SomeDataclass: not_a_float is not an instance of typing.Optional[float]",
             ],
             [
-                {'bool_value': 'not_a_bool'},
-                "Cannot structure SomeDataclass: "
-                "not_a_bool is not an instance of typing.Optional[bool]",
+                {"bool_value": "not_a_bool"},
+                "Cannot structure SomeDataclass: not_a_bool is not an instance of typing.Optional[bool]",
             ],
             [
-                {'decimal_value': 'not_a_decimal'},
+                {"decimal_value": "not_a_decimal"},
                 "Cannot structure SomeDataclass: "
                 "not_a_decimal is not an instance of typing.Optional[decimal.Decimal]",
             ],
             [
-                {'enum_value': 'not_an_enum'},
+                {"enum_value": "not_an_enum"},
                 "Cannot structure SomeDataclass: "
                 "not_an_enum is not an instance of typing.Optional[tests.cattrs_extras.test_converter.SomeEnum]",
             ],
             [
-                {'dict_value': 'not_a_dict'},
+                {"dict_value": "not_a_dict"},
                 "Cannot structure SomeDataclass: "
                 "not_a_dict is not an instance of typing.Optional[typing.Dict[str, str]]",
             ],
             [
-                {'attrs_value': 'not_an_attrs'},
+                {"attrs_value": "not_an_attrs"},
                 "Cannot structure SomeDataclass: "
                 "not_an_attrs is not an instance of typing.Optional[tests.cattrs_extras.test_converter.SomeNestedDataclass]",
             ],
             [
-                {'attrs_value': {'int_value': 'not_an_int'}},
-                "Cannot structure SomeNestedDataclass: "
-                "not_an_int is not an instance of <class 'int'>",
+                {"attrs_value": {"int_value": "not_an_int"}},
+                "Cannot structure SomeNestedDataclass: not_an_int is not an instance of <class 'int'>",
             ],
             [
-                {'attrs_value': {}},
-                "Cannot structure SomeNestedDataclass: "
-                "missing 1 required keyword-only argument: 'int_value'",
+                {"attrs_value": {}},
+                "Cannot structure SomeNestedDataclass: missing 1 required keyword-only argument: 'int_value'",
             ],
         ]
 
@@ -118,12 +113,8 @@ class ConverterTest(unittest.TestCase):
         class WorkingConfig:
             subconfig: Union[SomeClass, AnotherClass]
 
-        first_config = self.converter.structure(
-            {'subconfig': {'a': '', 'b': 1}}, WorkingConfig
-        )
-        second_config = self.converter.structure(
-            {'subconfig': {'c': '', 'd': 1}}, WorkingConfig
-        )
+        first_config = self.converter.structure({"subconfig": {"a": "", "b": 1}}, WorkingConfig)
+        second_config = self.converter.structure({"subconfig": {"c": "", "d": 1}}, WorkingConfig)
 
         self.assertIsInstance(first_config.subconfig, SomeClass)
         self.assertIsInstance(second_config.subconfig, AnotherClass)
@@ -144,12 +135,8 @@ class ConverterTest(unittest.TestCase):
         class WorkingConfig:
             subconfig: Union[SomeClass, AnotherClass]
 
-        first_config = self.converter.structure(
-            {'subconfig': {'a': '', 'b': 1}}, WorkingConfig
-        )
-        second_config = self.converter.structure(
-            {'subconfig': {'a': '', 'b': 1, 'c': 1}}, WorkingConfig
-        )
+        first_config = self.converter.structure({"subconfig": {"a": "", "b": 1}}, WorkingConfig)
+        second_config = self.converter.structure({"subconfig": {"a": "", "b": 1, "c": 1}}, WorkingConfig)
 
         self.assertIsInstance(first_config.subconfig, SomeClass)
         self.assertIsInstance(second_config.subconfig, AnotherClass)
@@ -172,13 +159,9 @@ class ConverterTest(unittest.TestCase):
         class WorkingConfig:
             subconfig: Union[SomeClass, AnotherClass, UnionClass]
 
-        first_config = self.converter.structure({'subconfig': {'a': ''}}, WorkingConfig)
-        second_config = self.converter.structure(
-            {'subconfig': {'b': ''}}, WorkingConfig
-        )
-        third_config = self.converter.structure(
-            {'subconfig': {'a': '', 'b': ''}}, WorkingConfig
-        )
+        first_config = self.converter.structure({"subconfig": {"a": ""}}, WorkingConfig)
+        second_config = self.converter.structure({"subconfig": {"b": ""}}, WorkingConfig)
+        third_config = self.converter.structure({"subconfig": {"a": "", "b": ""}}, WorkingConfig)
 
         assert isinstance(first_config.subconfig, SomeClass)
         assert isinstance(second_config.subconfig, AnotherClass)
@@ -202,13 +185,9 @@ class ConverterTest(unittest.TestCase):
         class WorkingConfig:
             subconfig: Union[UnionClass, SomeClass, AnotherClass]
 
-        first_config = self.converter.structure({'subconfig': {'a': ''}}, WorkingConfig)
-        second_config = self.converter.structure(
-            {'subconfig': {'b': ''}}, WorkingConfig
-        )
-        third_config = self.converter.structure(
-            {'subconfig': {'a': '', 'b': ''}}, WorkingConfig
-        )
+        first_config = self.converter.structure({"subconfig": {"a": ""}}, WorkingConfig)
+        second_config = self.converter.structure({"subconfig": {"b": ""}}, WorkingConfig)
+        third_config = self.converter.structure({"subconfig": {"a": "", "b": ""}}, WorkingConfig)
 
         assert isinstance(first_config.subconfig, SomeClass)
         assert isinstance(second_config.subconfig, AnotherClass)
@@ -232,9 +211,7 @@ class ConverterTest(unittest.TestCase):
         class WorkingConfig:
             subconfig: List[Union[UnionClass, SomeClass, AnotherClass]]
 
-        config = self.converter.structure(
-            {'subconfig': [{'a': ''}, {'b': ''}, {'a': '', 'b': ''}]}, WorkingConfig
-        )
+        config = self.converter.structure({"subconfig": [{"a": ""}, {"b": ""}, {"a": "", "b": ""}]}, WorkingConfig)
 
         assert isinstance(config.subconfig[0], SomeClass)
         assert isinstance(config.subconfig[1], AnotherClass)
@@ -259,7 +236,7 @@ class ConverterTest(unittest.TestCase):
             subconfig: Union[SomeClass, AnotherClass, UnionClass]
 
         try:
-            self.converter.structure({'subconfig': {'c': ''}}, WorkingConfig)
+            self.converter.structure({"subconfig": {"c": ""}}, WorkingConfig)
         except StructureError as exc:
             self.assertEqual(
                 "Cannot structure typing.Union["

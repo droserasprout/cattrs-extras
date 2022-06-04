@@ -1,4 +1,3 @@
-import collections
 import importlib
 from contextlib import suppress
 from datetime import date
@@ -36,9 +35,7 @@ class TortoiseConverter(Converter):
         self.register_structure_hook(tortoise.Model, self._structure_tortoise_model)
         self.register_unstructure_hook(tortoise.Model, self._unstructure_tortoise_model)
 
-    def _structure_tortoise_model(
-        self, obj: Dict[str, Any], cls: Type[tortoise.Model]
-    ) -> tortoise.Model:
+    def _structure_tortoise_model(self, obj: Dict[str, Any], cls: Type[tortoise.Model]) -> tortoise.Model:
 
         result_dict: Dict[str, Any] = {}
         saved_in_db = False
@@ -57,14 +54,10 @@ class TortoiseConverter(Converter):
                 [
                     field.null is False,
                     field_value is None,
-                    not (
-                        isinstance(field, fields.DatetimeField) and field.auto_now_add
-                    ),
+                    not (isinstance(field, fields.DatetimeField) and field.auto_now_add),
                 ]
             ):
-                raise StructureError(
-                    f'Cannot structure {cls.__qualname__}: "{field_name}" field is not nullable'
-                )
+                raise StructureError(f'Cannot structure {cls.__qualname__}: "{field_name}" field is not nullable')
 
             if field_name not in obj:
                 continue
@@ -82,9 +75,7 @@ class TortoiseConverter(Converter):
                 field,
                 (fields.data.CharEnumFieldInstance, ReversedCharEnumFieldInstance),
             ):
-                known_type = (
-                    Optional[field.enum_type] if field.null else field.enum_type
-                )
+                known_type = Optional[field.enum_type] if field.null else field.enum_type
 
             if known_type is not None:
                 result_dict[field_name] = self.structure(
@@ -92,15 +83,15 @@ class TortoiseConverter(Converter):
                     cl=known_type,  # type: ignore
                 )
 
-            # FIXME: tortoise.exceptions.ConfigurationError: You can't set backward relations through init, change related model instead
+            # FIXME: tortoise.exceptions.ConfigurationError: You can"t set backward relations through init, change related model instead
             # Should we try to hack it somehow or just ignore backward relations even if fetched?
             elif isinstance(field, fields.relational.BackwardFKRelation):
                 continue
 
             elif isinstance(field, fields.relational.RelationalField) and field_value:
-                # FIXME: Hinted as Type['Model']
+                # FIXME: Hinted as Type["Model"]
                 if isinstance(field.model, str):
-                    field_model = getattr(self._models, field.model.split('.')[-1])
+                    field_model = getattr(self._models, field.model.split(".")[-1])
                 else:
                     field_model = field.model
 
@@ -131,9 +122,7 @@ class TortoiseConverter(Converter):
 
             if isinstance(field, fields.relational.BackwardFKRelation):
                 try:
-                    result_dict[field_name] = self.unstructure(
-                        field_value.related_objects  # type: ignore
-                    )
+                    result_dict[field_name] = self.unstructure(field_value.related_objects)  # type: ignore
                 except tortoise.exceptions.NoValuesFetched:
                     pass
 
@@ -159,36 +148,28 @@ class TortoiseConverter(Converter):
         if NoneType in union_types:  # type: ignore
             union_types = tuple(e for e in union_types if e is not NoneType)  # type: ignore
 
-        if not all(hasattr(e, '_meta') for e in union_types):
+        if not all(hasattr(e, "_meta") for e in union_types):
             raise StructureError(
-                f'Cannot structure {union}: only unions of attr classes or tortoise models are supported currently. '
-                f'Register a structure hook manually.'
+                f"Cannot structure {union}: only unions of attr classes or tortoise models are supported currently. "
+                f"Register a structure hook manually."
             )
 
         if len(union_types) < 2:
-            raise StructureError(
-                f'Cannot structure {union}: at least two classes required.'
-            )
+            raise StructureError(f"Cannot structure {union}: at least two classes required.")
 
-        cls_and_attrs = [(cl, set(at for at in cl._meta.fields)) for cl in union_types]
+        cls_and_attrs = [(cl, set(cl._meta.fields)) for cl in union_types]
 
         if len([attrs for _, attrs in cls_and_attrs if len(attrs) == 0]) > 1:
-            raise StructureError(
-                f'Cannot structure {union}: at least two classes have no attributes.'
-            )
+            raise StructureError(f"Cannot structure {union}: at least two classes have no attributes.")
 
         cls_and_attrs.sort(key=lambda c_a: len(c_a[1]))
 
         def _dis_func(data: Mapping) -> Type:
-            if not isinstance(data, collections.Mapping):
-                raise StructureError(
-                    f'Cannot structure {union}: only mappings are supported as input.'
-                )
+            if not isinstance(data, Mapping):
+                raise StructureError(f"Cannot structure {union}: only mappings are supported as input.")
             for cls, cls_keys in cls_and_attrs:
                 if all([data_key in cls_keys for data_key in data]):
                     return cls
-            raise StructureError(
-                f'Cannot structure {union}: {data} does not match any of generic arguments'
-            )
+            raise StructureError(f"Cannot structure {union}: {data} does not match any of generic arguments")
 
         return _dis_func
