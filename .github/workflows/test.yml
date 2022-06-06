@@ -1,14 +1,11 @@
 name: Test
 on:
   push:
-    paths:
-      - "src/**"
-      - "tests/**"
-      - "pyproject.toml"
-      - "poetry.lock"
-      - "Makefile"
     branches:
       - "master"
+  pull_request:
+    branches:
+      - 'master'
 
 jobs:
   test:
