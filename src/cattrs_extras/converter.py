@@ -73,7 +73,7 @@ class Converter(cattr.Converter):
             human_class = last_frame_locals["cl"].__qualname__
 
             if isinstance(exc, TypeError) and "required keyword-only" in str(exc):
-                exc_message = " ".join(str(exc).split(" ")[1:])
+                exc_message = " ".join(str(exc).split()[1:])
                 message = f"Cannot structure {human_class}: {exc_message}"
             else:
                 value = last_frame_locals["val"]
