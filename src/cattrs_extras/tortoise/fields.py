@@ -34,14 +34,14 @@ class ReversedCharEnumFieldInstance(CharField):
         super().__init__(description=description, max_length=max_length, **kwargs)
         self.enum_type = enum_type
 
-    def to_python_value(self, value: Union[Enum, str, None]) -> Union[Enum, None]:
+    def to_python_value(self, value: Union[Enum, str, None]) -> Optional[Enum]:
         if value is None:
             return None
         if isinstance(value, Enum):
             return value
         return self.enum_type[value]
 
-    def to_db_value(self, value: Optional[Any], instance: Union[Type[Model], Model]) -> Union[str, None]:
+    def to_db_value(self, value: Optional[Any], instance: Union[Type[Model], Model]) -> Optional[str]:
         if value is None:
             return None
         if isinstance(value, Enum):
