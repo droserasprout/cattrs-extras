@@ -121,16 +121,12 @@ class TortoiseConverter(Converter):
                 continue
 
             if isinstance(field, fields.relational.BackwardFKRelation):
-                try:
+                with suppress(tortoise.exceptions.NoValuesFetched):
                     result_dict[field_name] = self.unstructure(field_value.related_objects)  # type: ignore
-                except tortoise.exceptions.NoValuesFetched:
-                    pass
 
             elif isinstance(field, fields.relational.RelationalField):
-                try:
+                with suppress(tortoise.exceptions.NoValuesFetched):
                     result_dict[field_name] = self.unstructure(field_value)
-                except tortoise.exceptions.NoValuesFetched:
-                    pass
 
             else:
                 result_dict[field_name] = self.unstructure(field_value)

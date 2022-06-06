@@ -13,24 +13,29 @@ This package contains advanced converter classes for [cattrs](https://github.com
 ## Installation
 
 ```text
- ==> cattrs-extras makefile
+➜  cattrs-extras git:(master) ✗ make
 
- DEV=1           Install dev dependencies
+    🚧 cattrs-extras developer tools
 
-all:             Run a whole CI pipeline (default)
-install:         Install project
+ DEV=1                Whether to install dev dependencies
+ TAG=latest           Tag for the `image` command
+
+help:            Show this help (default)
+all:             Run a whole CI pipeline: lint, run tests, build docs
+install:         Install project dependencies
 lint:            Lint with all tools
-isort:           Lint with isort
-black:           Lint with black
+test:            Run test suite
+
+isort:           Format with isort
+black:           Format with black
 flake:           Lint with flake8
 mypy:            Lint with mypy
-test:            Run test suite
 cover:           Print coverage for the current branch
-build:           Build wheel Python package
+build:           Build Python wheel package
 release-patch:   Release patch version
 release-minor:   Release minor version
 release-major:   Release major version
-help:            Show this help
+clean:           Remove all files from .gitignore except for `.venv`
 ```
 
 ## Usage

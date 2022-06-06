@@ -62,8 +62,7 @@ class ConverterTest(unittest.TestCase):
             ],
             [
                 {"decimal_value": "not_a_decimal"},
-                "Cannot structure SomeDataclass: "
-                "not_a_decimal is not an instance of typing.Optional[decimal.Decimal]",
+                "Cannot structure SomeDataclass: not_a_decimal is not an instance of typing.Optional[decimal.Decimal]",
             ],
             [
                 {"enum_value": "not_an_enum"},
@@ -72,8 +71,7 @@ class ConverterTest(unittest.TestCase):
             ],
             [
                 {"dict_value": "not_a_dict"},
-                "Cannot structure SomeDataclass: "
-                "not_a_dict is not an instance of typing.Optional[typing.Dict[str, str]]",
+                "Cannot structure SomeDataclass: not_a_dict is not an instance of typing.Optional[typing.Dict[str, str]]",
             ],
             [
                 {"attrs_value": "not_an_attrs"},
