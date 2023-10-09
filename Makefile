@@ -17,7 +17,7 @@ all:            ## Run a whole CI pipeline: lint, run tests, build docs
 	make install lint test
 
 install:        ## Install project dependencies
-	poetry install \
+	poetry install --extras tortoise \
 	`if [ -n "${EXTRAS}" ]; then for i in ${EXTRAS}; do echo "-E $$i "; done; fi` \
 	`if [ "${DEV}" = "0" ]; then echo "--no-dev"; fi`
 	poetry run pip uninstall -y flakehell || true

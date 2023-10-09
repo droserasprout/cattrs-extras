@@ -21,7 +21,8 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-cattrs = "^22.1.0"
+# NOTE: As of March 2022, cattrs has switched to calendar versioning
+cattrs = ">=23.1.2"
 dateutils = "^0.6.12"
 exceptiongroup = "^1.0.0-rc.2"
 pytimeparse = "^1.1.8"
